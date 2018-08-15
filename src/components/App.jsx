@@ -2,14 +2,33 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      videoList: this.props.videos,
-      currentVideo: this.props.videos[0]
+      videoList: window.exampleVideoData,
+      currentVideo: window.exampleVideoData[0]
     };
   }
   
+  searchStringHandler(searchString) {
+    this.props.searchYouTube({query: searchString}, (data) => {
+      this.setState({
+        videoList: data,
+        currentVideo: data[0]     
+      });
+    });
+  }
+
   onListItemClick(video) {
     this.setState({
       currentVideo: video
+    });
+  }
+
+  componentDidMount() {
+    this.props.searchYouTube({query: 'cats'}, (data) => {
+      //console.log(data);
+      //console.log(this);
+      this.setState({
+        videoList: data, 
+        currentVideo: data[0]});
     });
   }
 
@@ -18,7 +37,7 @@ class App extends React.Component {
       <div>
         <nav className="navbar">
           <div className="col-md-6 offset-md-3">
-            <div><h5><em>search</em> view goes here</h5></div>
+            <Search searchStringHandler={this.searchStringHandler.bind(this)}/>
           </div>
         </nav>
         <div className="row">
